@@ -36,24 +36,3 @@ if __name__ == '__main__':
             file.write(image_chunk)
             image_chunk = client_socket.recv(2048)
         file.close()
-
-        # photos = load_images_from_folder("img")
-        # for e in photos:
-        #     print("Foto: " + e.get_name())
-        # for photo in photos:
-        #     img = mp_segmentation(photo)
-        #     if img == "no":
-        #         print("Borrant imatge...")
-        #         img_count -= 1
-        #         print("Borrant " + str(img_count))
-        #         os.system("cd img && del imatge" + str(img_count) + ".jpg")
-        #         os.system("cd shadows && del imatge" + str(img_count) + ".png")
-        #         # photos.pop(img_count - 1)
-        #         break
-        #     else:
-        #         blurred_mask = cv2.medianBlur(img, 11)
-        #         frame = cv2.cvtColor(blurred_mask, cv2.COLOR_BGR2BGRA)
-        #         frame[np.all(frame == [255, 255, 255, 255], axis=2)] = [0, 0, 0, 0]
-        #         print(photo.get_name())
-        #         cv2.imwrite('shadows/imatge' + str(img_count - 1) + '.png', frame)
-        # put_together(photos)
