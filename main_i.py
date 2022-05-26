@@ -192,7 +192,7 @@ if __name__ == '__main__':
     baseColor = (187, 62, 3)  # ORANGE
     screen = pygame.display.set_mode((1920, 1080))
     obstacles = pygame.sprite.Group()
-    # get_shadow()
+    get_shadow()
     edited_photos = load_images_from_folder("shadows")
     # mirar la size de shadows
     start_pygame()  # adjuntarli l'array d'imatges o d'objectes shadow
