@@ -14,12 +14,12 @@ class Shadow(pygame.sprite.Sprite):
         self.x = x
         self.y = y
         self.direction = 1
-        self.speed_x = randint(2, 5)
-        self.speed_y = randint(2, 5)
+        self.speed_x = 7 # randint(2, 5)
+        self.speed_y = 7  # randint(2, 5)
         self.obstacles = obstacles
 
         # initializes player image, scales it, and masks it
-        print("image" + image)
+        print("image: " + image)
         self.image = pygame.image.load(image)
         self.image = pygame.transform.scale(self.image, (self.image.get_width() / 3, self.image.get_height() / 3))
         self.mask_image = pygame.mask.from_surface(self.image)

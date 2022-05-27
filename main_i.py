@@ -1,3 +1,4 @@
+import sys
 import time
 import pygame
 import random
@@ -13,7 +14,7 @@ from Photo import Photo
 
 from Shadow import Shadow
 
-global img_count
+img_count = 0
 
 
 def mp_segmentation(photo):
@@ -49,6 +50,7 @@ def mp_segmentation(photo):
 
 
 def load_images_from_folder(folder):
+    global img_count
     images = []
     img_count = 0
     for filename in os.listdir(folder):
@@ -67,7 +69,7 @@ def put_together(photos):
     positionsy = [50, 0, 100, 0, 500]
 
     background = Image.open("background.jpg")
-    background = background.resize((int(1920 / 1.5), int(1080 / 1.5)))
+    background = background.resize((int(1920 / 1.5), int(1200 / 1.5)))
 
     bg_w, bg_h = background.size
     i = 0
@@ -99,13 +101,14 @@ def play_scene(shadows):
 
 # OBSTACLES
 def create_obstacles_map1():
-    obstacles.add(Obstacle(screen, 1920, 100, 0, 950))  # Horizontal Bottom
-    obstacles.add(Obstacle(screen, 1920, 100, 0, 0))  # Horizontal top
-    obstacles.add(Obstacle(screen, 100, 1000, 100, 0))  # Vertical left
-    obstacles.add(Obstacle(screen, 100, 1000, 1700, 0))  # Vertical right
+    obstacles.add(Obstacle(screen, 1920, 100, 0, 1200))  # Horizontal Bottom
+    obstacles.add(Obstacle(screen, 1920, 100, -100, -100))  # Horizontal top
+    obstacles.add(Obstacle(screen, 100, 1200, -100, 0))  # Vertical left
+    obstacles.add(Obstacle(screen, 100, 1200, 1920, 0))  # Vertical right
 
 
 def get_shadow():
+    global img_count
     photos = load_images_from_folder("img")
     for photo in photos:
         image = mp_segmentation(photo)
@@ -127,7 +130,11 @@ def get_shadow():
 
 
 def start_pygame():
+
     array_shadows = []
+    x = 1920
+    y = 0
+    os.environ['SDL_VIDEO_WINDOW_POS'] = f"{x},{y}"
     pygame.init()
     clock = pygame.time.Clock()
     create_obstacles_map1()
@@ -148,10 +155,18 @@ def start_pygame():
     change_every_x_milliseconds = 5000.
     current_color = array_color[0]
     while run:
+        for event in pygame.event.get():
+            if event.type == pygame.K_q:
+                run = False
+        get_shadow()
         new_images = load_images_from_folder("shadows")
-        if len(edited_photos) != len(new_images):
+
+        # new_images = load_images_from_folder("img")
+
+        if len(array_shadows) != len(new_images):
             array_shadows.append(
-                Shadow(screen, 200, 700, new_images[len(new_images) - 1].get_original_path(), obstacles))
+                Shadow(screen, 200, 700, "shadows/" + new_images[len(new_images) - 1] .get_name() + ".png", obstacles))
+
         for ob in obstacles:
             ob.update_obstacle()
         for shadow in array_shadows:
@@ -176,21 +191,23 @@ def start_pygame():
                 current_color = shadow.fade_color(current_color)
 
         # Setting the framerate to 60fps
-        clock.tick(60)
+        clock.tick(144)
         # Updating the display surface
         pygame.display.update()
         # Filling the window with white color
         screen.fill((255, 255, 255))
-
+    pygame.quit()
+    sys.exit()
 
 if __name__ == '__main__':
-    img_count = 0
+    os.system("rmdir shadows /S /Q")
+    os.system("mkdir shadows")
     # COLOR ARRAY
     array_color = [(207, 92, 54), (202, 103, 2), (238, 155, 0), (255, 207, 0), (73, 167, 155), (10, 147, 150),
                    (0, 96, 115), (0, 52, 89), (0, 18, 25), (52, 58, 64), (173, 181, 189), (218, 221, 223),
                    (255, 255, 255)]
     baseColor = (187, 62, 3)  # ORANGE
-    screen = pygame.display.set_mode((1920, 1080))
+    screen = pygame.display.set_mode((1920, 1200), flags=pygame.NOFRAME)
     obstacles = pygame.sprite.Group()
     get_shadow()
     edited_photos = load_images_from_folder("shadows")

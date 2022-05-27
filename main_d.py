@@ -19,8 +19,6 @@ if __name__ == '__main__':
     img_count = 0
     os.system("rmdir /s /q img ")
     os.system("mkdir img")
-    os.system("rmdir /s /q shadows ")
-    os.system("mkdir shadows")
     while True:
         # Socket connection that recieves the image from the raspberry pi 4
         print("Esperant connexions...")
@@ -36,3 +34,4 @@ if __name__ == '__main__':
             file.write(image_chunk)
             image_chunk = client_socket.recv(2048)
         file.close()
+        print("Foto rebuda.")
