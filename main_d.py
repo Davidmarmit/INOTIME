@@ -28,10 +28,10 @@ if __name__ == '__main__':
         #     os.system("cd shadows && del imatge" + str(img_count - 5) + ".png")
         file = open('img/imatge' + str(img_count) + '.jpg', "wb+")
         img_count += 1
-        image_chunk = client_socket.recv(2048)
+        image_chunk = client_socket.recv(4096)
 
         while image_chunk:
             file.write(image_chunk)
-            image_chunk = client_socket.recv(2048)
+            image_chunk = client_socket.recv(4096)
         file.close()
         print("Foto rebuda.")

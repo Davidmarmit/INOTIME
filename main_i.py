@@ -129,8 +129,28 @@ def get_shadow():
             cv2.imwrite('shadows/' + photo.get_name() + '.png', frame)
 
 
-def start_pygame():
+def get_shadowNew():
+    global img_count
+    photos = load_images_from_folder("img")
+    image = mp_segmentation(photos[len(photos) - 1])
+    if image == "no":
+        print("Borrant imatge...")
+        print("Borrant " + str(img_count))
+        img_count -= 1
+        os.system("cd img && del imatge" + str(img_count) + ".jpg")
+        os.system("cd shadows && del imatge" + str(img_count) + ".png")
 
+    else:
+        blurred_mask = cv2.medianBlur(image, 11)
+        frame = cv2.cvtColor(blurred_mask, cv2.COLOR_BGR2BGRA)
+        frame[np.all(frame == [255, 255, 255, 255], axis=2)] = [0, 0, 0, 0]
+        # frame[np.all(frame == [10], axis=2)] = [255, 0, 0]
+
+        # frame[np.where((frame == [0, 0, 0, 0]).all(axis=1))] = [0, 0, 255, 255]
+        cv2.imwrite('shadows/' + photos[len(photos) - 1].get_name() + '.png', frame)
+
+
+def start_pygame():
     array_shadows = []
     x = 1920
     y = 0
@@ -149,7 +169,7 @@ def start_pygame():
     print(end - start)
 
     for photo in edited_photos:
-        array_shadows.append(Shadow(screen, 200, 700, photo.get_original_path(), obstacles))
+        array_shadows.append(Shadow(screen, -400, 400, photo.get_original_path(), obstacles))
 
     ss = False
     change_every_x_milliseconds = 5000.
@@ -158,14 +178,16 @@ def start_pygame():
         for event in pygame.event.get():
             if event.type == pygame.K_q:
                 run = False
-        get_shadow()
-        new_images = load_images_from_folder("shadows")
+        new_images = load_images_from_folder("img")
 
         # new_images = load_images_from_folder("img")
 
         if len(array_shadows) != len(new_images):
+            time.sleep(2)
+            get_shadowNew()
+            new_images = load_images_from_folder("shadows")
             array_shadows.append(
-                Shadow(screen, 200, 700, "shadows/" + new_images[len(new_images) - 1] .get_name() + ".png", obstacles))
+                Shadow(screen, -400, 400, "shadows/" + new_images[len(new_images) - 1].get_name() + ".png", obstacles))
 
         for ob in obstacles:
             ob.update_obstacle()
@@ -198,6 +220,7 @@ def start_pygame():
         screen.fill((255, 255, 255))
     pygame.quit()
     sys.exit()
+
 
 if __name__ == '__main__':
     os.system("rmdir shadows /S /Q")
