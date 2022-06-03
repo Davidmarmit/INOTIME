@@ -7,5 +7,5 @@
 >Iris Querol
 # Design Artist: 
 >Emma Tarazona
-#Hardware Designer:
+# Hardware Designer:
 >David Martinez
